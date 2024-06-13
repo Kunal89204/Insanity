@@ -10,12 +10,11 @@ const productSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    video: {
-      type: String,
-    },
+   
     discountedPrice: {
       type: Number,
     },
+    images:[],
     category: { type: mongoose.Schema.Types.ObjectId, ref: "category" },
     description: { type: String },
     owner: { type: mongoose.Schema.Types.ObjectId, ref: "user" },
