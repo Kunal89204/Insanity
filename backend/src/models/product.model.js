@@ -14,8 +14,10 @@ const productSchema = new mongoose.Schema(
     discountedPrice: {
       type: Number,
     },
+    
     images:[],
-    category: { type: mongoose.Schema.Types.ObjectId, ref: "category" },
+    category: [{ type: mongoose.Schema.Types.ObjectId, ref: "category" }],
+    reviews:[{type:mongoose.Schema.Types.ObjectId, ref: "review"}],
     description: { type: String },
     owner: { type: mongoose.Schema.Types.ObjectId, ref: "user" },
     dimensions: {

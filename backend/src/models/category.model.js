@@ -4,6 +4,12 @@ const categorySchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
     description: { type: String },
+    images:[
+      {
+        thumbnail: String,
+        banner: String
+      }
+    ]
   },
   { timestamps: true }
 );
