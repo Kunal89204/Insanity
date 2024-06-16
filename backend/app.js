@@ -7,6 +7,7 @@ const dotenv = require('dotenv')
 app.use(cors())
 app.use(express.json());
 app.use(bodyParser.json())
+app.use('/uploads', express.static('./src/uploads'))
 dotenv.config()
 
 

@@ -23,7 +23,7 @@ const loginUser = async (req, res) => {
 
 const registerUser = async (req, res) => {
   try {
-    const { username, password } = req.body;
+    const {fullname,  username, password } = req.body;
 
     const existingUser = await User.findOne({ username });
 
@@ -34,6 +34,7 @@ const registerUser = async (req, res) => {
     const newUser = await User.create({
       username,
       password,
+      fullname
     });
 
     res.json({ userId: newUser._id });
