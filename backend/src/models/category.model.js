@@ -4,12 +4,13 @@ const categorySchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
     description: { type: String },
-    images:[
-      {
-        thumbnail: String,
-        banner: String
-      }
-    ]
+    images:
+    {
+      thumbnail: String,
+      banner: String
+    },
+    subCategories:[{type:String}]
+
   },
   { timestamps: true }
 );

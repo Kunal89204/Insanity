@@ -15,7 +15,24 @@ const loginUser = async (req, res) => {
       return res.json({ message: "Invalid username or password" });
     }
 
-    res.json({ userId: existingUser._id, role: existingUser.role });
+     // Generate access and refresh tokens
+     const accessToken = existingUser.generateAccessToken();
+     const refreshToken = existingUser.generateRefreshToken();
+ 
+     // Save refresh token to user document (if needed)
+     existingUser.refreshToken = refreshToken;
+     await existingUser.save();
+ 
+     // Set refresh token as a cookie
+     res.cookie('refreshToken', refreshToken, {
+       httpOnly: true,
+       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+       secure: true,
+       sameSite: 'strict',
+     });
+ 
+     // Send access token in response
+     res.json({ accessToken, role });
   } catch (error) {
     console.log(error);
   }
@@ -37,7 +54,24 @@ const registerUser = async (req, res) => {
       fullname
     });
 
-    res.json({ userId: newUser._id });
+    // Generate access and refresh tokens
+    const accessToken = newUser.generateAccessToken();
+    const refreshToken = newUser.generateRefreshToken();
+
+    // Save refresh token to user document (if needed)
+    newUser.refreshToken = refreshToken;
+    await newUser.save();
+
+    // Set refresh token as a cookie
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      secure: true,
+      sameSite: 'strict',
+    });
+
+    // Send access token in response
+    res.json({ accessToken });
   } catch (error) {
     console.error(error);
     res
@@ -101,9 +135,18 @@ const getUsers = async (req, res) => {
   }
 }
 
+const validate_token = async (req, res) => {
+  try {
+    res.status(200).json({ valid: true })
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 module.exports = {
   loginUser,
   registerUser,
   editProfile,
-  getUsers
+  getUsers,
+  validate_token
 };

@@ -30,7 +30,7 @@ const Users = () => {
                 <td>{user.role}</td>
                 <td>{user.age}</td>
                 <td>{user.orders.length}</td>
-                <td>{user.createdAt.split('T')}</td>
+                <td>{user.createdAt}</td>
             </tr>
         ))}
       </table>

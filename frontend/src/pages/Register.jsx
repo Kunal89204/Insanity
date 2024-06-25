@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import axios from "axios"
+import useRegister from '../hooks/useRegister';
 import {useNavigate} from 'react-router-dom'
 import Popup from '../components/Popup';
 
 const Register = () => {
-  const navigate = useNavigate()
+  const {registerHook} = useRegister()
   const [popup, setPopup] = useState(false)
   const [popupValue, setPopupValue] = useState("")
   const [formData, setFormData] = useState({
@@ -40,29 +40,9 @@ const Register = () => {
       return;
     }
 
- 
+ registerHook(formData)
 
-    axios.post('http://localhost:8000/api/v1/register', formData)
-    .then((respo) => {
-      if (respo.data.userId) {
-        console.log(respo.data.userId);
-        
-        localStorage.setItem('NexMartUserId', respo.data.userId);
-        navigate('/');
-      }else if (respo.data.message){
-        console.log(respo.data.message)
-        setPopupValue(respo.data.message)
-        setPopup(true)
-        
-        setTimeout(() => {
-          
-          setPopup(false)
-        }, 2000);
-      }
-    })
-    .catch((error) => {
-      console.log(error)
-    })
+    
   };
 
   return (

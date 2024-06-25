@@ -25,9 +25,9 @@ const Admin = () => {
 
   console.log(products);
   return (
-    <div className="flex">
+    <div className="flex gap-2 p-6">
       <Link to={'/admin/users'}>
-        <AdminCard title={"Users"} value={users.length} bg={"orange"}>
+        <AdminCard title={"Users"} value={users.length} bg={"red"}>
           <FaRegUser />
         </AdminCard>
       </Link>

@@ -64,7 +64,8 @@ const addProduct = async (req, res) => {
 
 const getProduct = async (req, res) => {
   try {
-    const productData = await Product.find();
+    const productData = await Product.find() .populate('owner')
+    .populate('category');
     res.json(productData);
   } catch (error) {
     console.log(error);

@@ -1,13 +1,28 @@
 import React, { useState } from 'react';
 import Logo from "../assets/logo.png";
-import {Link} from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { MdOutlineShoppingBag } from "react-icons/md";
+import { FaRegUser } from "react-icons/fa";
+import { useAuthStore } from '../context/store';
+
+
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const { logout } = useAuthStore()
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
+  };
+
+  const toggleProfileDropdown = () => {
+    setIsProfileOpen(!isProfileOpen);
+  };
+
+  const handleProfileClick = () => {
+    setIsProfileOpen(false); // Close dropdown after click (optional)
+    // Additional logic for profile link click
   };
 
   const handleSelect = (category) => {
@@ -17,9 +32,11 @@ const Navbar = () => {
 
   return (
     <div className='flex items-center justify-around p-4 bg-[#F4F2EE] shadow-md'>
+
       <div className='w-[18vw]'>
-        <img src={Logo} alt="Logo" className='h-12' />
+        <Link to={'/'}><img src={Logo} alt="Logo" className='h-10' /></Link>
       </div>
+
       <div className='relative ml-4 bg-[#f0eadf] py-2 px-6 rounded'>
         <div className='flex items-center cursor-pointer' onClick={toggleDropdown}>
           <button>Shop By Category</button>
@@ -63,20 +80,34 @@ const Navbar = () => {
         )}
       </div>
 
-     <nav className='flex gap-10 px-10'>
-     <div><Link to={'/'}>Home</Link></div>
-      <div><Link to={'/'}>Shop</Link></div>
-      <div><Link to={'/'}>Products</Link></div>
-      <div><Link to={'/'}>About Us</Link></div>
-     </nav>
 
-     <div>
-      <input type="text" placeholder='Search' className='bg-white border-gray-300 rounded-lg'  />
-     </div>
+      <nav className='flex gap-10 px-10'>
+        <div><Link to={'/'}>Home</Link></div>
+        <div><Link to={'/'}>Shop</Link></div>
+        <div><Link to={'/'}>Products</Link></div>
+        <div><Link to={'/'}>About Us</Link></div>
+      </nav>
 
-     <div className='scale-150'>
-     <Link><MdOutlineShoppingBag /></Link>
-     </div>
+
+      <div>
+        <input type="text" placeholder='Search' className='bg-white border-gray-300 rounded-lg' />
+      </div>
+
+
+      <div className='scale-150'>
+        <Link><MdOutlineShoppingBag /></Link>
+      </div>
+
+      <div className='relative'>
+        <button onClick={toggleProfileDropdown}>
+          <FaRegUser />
+        </button>
+
+        <div className={`absolute border ${isProfileOpen?'block':'hidden'} bg-[#F4F2EE] right-0 rounded p-4 shadow shadow-black`}>
+          <Link to={'/profile/:username'}><div className='border-b px-6 pb-2' onClick={handleProfileClick}>Profile</div></Link>
+          <div onClick={logout} className='cursor-pointer px-6 pt-2' >Logout</div>
+        </div>
+      </div>
     </div>
   );
 };

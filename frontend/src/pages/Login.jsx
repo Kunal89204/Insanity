@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import axios from "axios";
+import useLogin from '../hooks/useLogin'
 import { useNavigate } from 'react-router-dom';
 import Popup from '../components/Popup';
 
 
 const Login = () => {
-  const navigate = useNavigate();
+  const {loginHook} = useLogin()
   const [popup, setPopup] = useState(false)
   const [popupValue, setPopupValue] = useState("")
   const [formData, setFormData] = useState({
@@ -41,36 +41,8 @@ const Login = () => {
       return;
     }
 
-    axios.post('http://localhost:8000/api/v1/login', formData)
-      .then((respo) => {
-
-        console.log(respo.data)
-        
-        if (respo.data.userId) {
-          console.log(respo.data.userId);
-
-          if (respo.data.role === 'admin') {
-            navigate('/admin')
-          }else{
-            localStorage.setItem('NexMartUserId', respo.data.userId);
-          navigate('/');
-          }
-          
-          
-        }else if (respo.data.message){
-          setPopupValue(respo.data.message)
-          setPopup(true)
-          
-          setTimeout(() => {
-            
-            setPopup(false)
-          }, 2000);
-        }
-        
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    loginHook(formData)
+   
   };
 
   return (

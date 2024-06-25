@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt")
+const jwt = require("jsonwebtoken")
 
 const userSchema = new mongoose.Schema(
   {
@@ -34,8 +35,12 @@ const userSchema = new mongoose.Schema(
       zip: String,
       country: String,
     },
+    refreshToken : {
+      type:String
+    },
     orders: [{ type: mongoose.Schema.Types.ObjectId, ref: "Order" }],
   },
+  
   { timestamps: true }
 );
 
@@ -58,5 +63,34 @@ userSchema.pre("save", async function(next) {
 userSchema.methods.comparePassword = async function (password) {
     return bcrypt.compare(password, this.password);
   };
+
+  // Generate access token
+userSchema.methods.generateAccessToken = function() {
+  return jwt.sign(
+    {
+      _id: this._id,
+      username: this.username,
+    },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: '2h', // Access token expires in 2 hours
+    }
+  );
+};
+
+// Generate refresh token
+userSchema.methods.generateRefreshToken = function() {
+  return jwt.sign(
+    {
+      _id: this._id,
+    },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: '24h', // Refresh token expires in 24 hours
+    }
+  );
+};
+
+
 
 module.exports = mongoose.model("user", userSchema);
