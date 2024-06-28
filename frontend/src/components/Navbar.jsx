@@ -10,7 +10,8 @@ import { useAuthStore } from '../context/store';
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const { logout } = useAuthStore()
+  const { logout, user } = useAuthStore()
+
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
@@ -104,7 +105,7 @@ const Navbar = () => {
         </button>
 
         <div className={`absolute border ${isProfileOpen?'block':'hidden'} bg-[#F4F2EE] right-0 rounded p-4 shadow shadow-black`}>
-          <Link to={'/profile/:username'}><div className='border-b px-6 pb-2' onClick={handleProfileClick}>Profile</div></Link>
+          <Link to={`/profile/${user.username}`}><div className='border-b px-6 pb-2' onClick={handleProfileClick}>Profile</div></Link>
           <div onClick={logout} className='cursor-pointer px-6 pt-2' >Logout</div>
         </div>
       </div>

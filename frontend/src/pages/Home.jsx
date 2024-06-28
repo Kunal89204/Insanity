@@ -1,21 +1,18 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Hero from '../components/Hero'
+import { useAuthStore } from '../context/store'
+import Categories from '../components/Categories'
 
 
 const Home = () => {
 
-  const navigate = useNavigate()
 
-  useEffect(() => {
-
-    if (!localStorage.getItem('NexMartUserId')) {
-      navigate('/login')
-    }
-  }, [])
   return (
     <div>
       <Hero />
+      <Categories />
+
     </div>
   )
 }

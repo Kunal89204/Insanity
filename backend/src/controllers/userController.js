@@ -32,7 +32,7 @@ const loginUser = async (req, res) => {
      });
  
      // Send access token in response
-     res.json({ accessToken, role });
+     res.json({ accessToken, role, username:existingUser.username });
   } catch (error) {
     console.log(error);
   }
