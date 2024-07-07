@@ -12,6 +12,7 @@ const Home = () => {
     <div>
       <Hero />
       <Categories />
+      <Hero />
 
     </div>
   )

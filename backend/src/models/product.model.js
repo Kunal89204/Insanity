@@ -15,7 +15,7 @@ const productSchema = new mongoose.Schema(
       type: Number,
     },
     
-    images:[],
+    images:[{type:String}],
     category: [{ type: mongoose.Schema.Types.ObjectId, ref: "category" }],
     reviews:[{type:mongoose.Schema.Types.ObjectId, ref: "review"}],
     description: { type: String },

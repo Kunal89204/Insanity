@@ -12,6 +12,9 @@ const addCategory = async (req, res) => {
             return res.status(400).json({ message: "Category already exists" });
         }
 
+        // Ensure subCategories is an array of strings
+        const subCategoriesArray = Array.isArray(subCategories) ? subCategories : subCategories.split(",").map(subCategory => subCategory.trim());
+
         // Create a new category instance
         const newCategory = new Category({
             name,
@@ -20,7 +23,7 @@ const addCategory = async (req, res) => {
                 thumbnail,
                 banner
             },
-            subCategories
+            subCategories: subCategoriesArray // Ensure subCategories is an array
         });
 
         // Save the new category to the database
@@ -32,6 +35,7 @@ const addCategory = async (req, res) => {
         res.status(500).json({ message: "Failed to add category", error: error.message });
     }
 };
+
 
 const updateCategory = async (req, res) => {
     try {

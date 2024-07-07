@@ -9,10 +9,19 @@ const categorySchema = new mongoose.Schema(
       thumbnail: String,
       banner: String
     },
-    subCategories:[{type:String}]
+    subCategories: [{ type: String }]
 
   },
   { timestamps: true }
 );
+
+
+
+
+
+
+
+
+
 
 module.exports = mongoose.model("category", categorySchema);
