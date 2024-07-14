@@ -1,210 +1,178 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const AddProductForm = () => {
-  const [formData, setFormData] = useState({
-    name: '',
-    price: '',
-    video: '',
-    discountedPrice: '',
-    thumbnail: '',
-    category: '',
-    description: '',
-    owner: '',
-    dimensions: { length: '', width: '', height: '', weight: '' },
-    stock: '',
-  });
+const ProductForm = () => {
+  const [name, setName] = useState('');
+  const [price, setPrice] = useState('');
+  const [discountedPrice, setDiscountedPrice] = useState('');
   const [images, setImages] = useState([]);
-  const [message, setMessage] = useState('');
+  const [video, setVideo] = useState(null);
+  const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [description, setDescription] = useState('');
+  const [length, setLength] = useState('');
+  const [width, setWidth] = useState('');
+  const [height, setHeight] = useState('');
+  const [weight, setWeight] = useState('');
+  const [stock, setStock] = useState('');
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
+  useEffect(() => {
+    // Fetch categories from API
+    axios.get('http://localhost:8000/api/v1/getCategory')
+      .then(response => setCategories(response.data))
+      .catch(error => console.error('Error fetching categories:', error));
+  }, []);
 
   const handleImageChange = (e) => {
-    setImages(e.target.files);
+    const files = Array.from(e.target.files);
+    setImages(files.map(file => URL.createObjectURL(file)));
   };
 
-  const handleSubmit = async (e) => {
+  const handleVideoChange = (e) => {
+    const file = e.target.files[0];
+    setVideo(URL.createObjectURL(file));
+  };
+
+  const handleSubmit = (e) => {
     e.preventDefault();
-    const data = new FormData();
-
-    // Append form data
-    for (const key in formData) {
-      if (key === 'dimensions') {
-        data.append('dimensions', JSON.stringify(formData.dimensions));
-      } else {
-        data.append(key, formData[key]);
-      }
-    }
-
-    // Append images
-    for (let i = 0; i < images.length; i++) {
-      data.append('img', images[i]);
-    }
-
-    try {
-      const response = await axios.post('http://localhost:8000/api/v1/addProduct', data, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-      setMessage(response.data.message);
-    } catch (error) {
-      setMessage('Error adding product');
-    }
+    console.log({
+      name,
+      price,
+      discountedPrice,
+      images,
+      video,
+      category: selectedCategory,
+      description,
+      dimensions: { length, width, height, weight },
+      stock,
+    });
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-4">
-      <h2 className="text-2xl font-bold mb-4">Add New Product</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Name</label>
-          <input
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleInputChange}
-            className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-            required
-          />
+    <form onSubmit={handleSubmit} className="max-w-3xl mx-auto p-6 bg-white rounded-md shadow-md space-y-4">
+      <div className="flex flex-col">
+        <label className="mb-2 text-lg font-semibold text-gray-700">Name</label>
+        <input
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          className="p-2 border border-gray-300 rounded-md"
+          required
+        />
+      </div>
+      <div className="flex flex-col">
+        <label className="mb-2 text-lg font-semibold text-gray-700">Price</label>
+        <input
+          type="number"
+          value={price}
+          onChange={(e) => setPrice(e.target.value)}
+          className="p-2 border border-gray-300 rounded-md"
+          required
+        />
+      </div>
+      <div className="flex flex-col">
+        <label className="mb-2 text-lg font-semibold text-gray-700">Discounted Price</label>
+        <input
+          type="number"
+          value={discountedPrice}
+          onChange={(e) => setDiscountedPrice(e.target.value)}
+          className="p-2 border border-gray-300 rounded-md"
+        />
+      </div>
+      <div className="flex flex-col">
+        <label className="mb-2 text-lg font-semibold text-gray-700">Images</label>
+        <input type="file" multiple onChange={handleImageChange} className="p-2 border border-gray-300 rounded-md" />
+        <div className="flex space-x-4 mt-4">
+          {images.map((src, index) => (
+            <img key={index} src={src} alt={`Preview ${index}`} className="w-24 h-24 object-cover rounded-md" />
+          ))}
         </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Price</label>
-          <input
-            type="number"
-            name="price"
-            value={formData.price}
-            onChange={handleInputChange}
-            className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-            required
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Video URL</label>
-          <input
-            type="text"
-            name="video"
-            value={formData.video}
-            onChange={handleInputChange}
-            className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Discounted Price</label>
-          <input
-            type="number"
-            name="discountedPrice"
-            value={formData.discountedPrice}
-            onChange={handleInputChange}
-            className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Thumbnail URL</label>
-          <input
-            type="text"
-            name="thumbnail"
-            value={formData.thumbnail}
-            onChange={handleInputChange}
-            className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Category</label>
-          <input
-            type="text"
-            name="category"
-            value={formData.category}
-            onChange={handleInputChange}
-            className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Description</label>
-          <textarea
-            name="description"
-            value={formData.description}
-            onChange={handleInputChange}
-            className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Owner</label>
-          <input
-            type="text"
-            name="owner"
-            value={formData.owner}
-            onChange={handleInputChange}
-            className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Dimensions</label>
-          <div className="grid grid-cols-2 gap-4">
+      </div>
+      <div className="flex flex-col">
+        <label className="mb-2 text-lg font-semibold text-gray-700">Video</label>
+        <input type="file" onChange={handleVideoChange} className="p-2 border border-gray-300 rounded-md" />
+        {video && (
+          <video controls src={video} className="w-full mt-4 rounded-md">
+            Your browser does not support the video tag.
+          </video>
+        )}
+      </div>
+      <div className="flex flex-col">
+        <label className="mb-2 text-lg font-semibold text-gray-700">Category</label>
+        <select
+          value={selectedCategory}
+          onChange={(e) => setSelectedCategory(e.target.value)}
+          className="p-2 border border-gray-300 rounded-md"
+        >
+          <option value="">Select a category</option>
+          {categories.map(category => (
+            <option key={category._id} value={category._id}>{category.name}</option>
+          ))}
+        </select>
+      </div>
+      <div className="flex flex-col">
+        <label className="mb-2 text-lg font-semibold text-gray-700">Description</label>
+        <textarea
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          className="p-2 border border-gray-300 rounded-md"
+        ></textarea>
+      </div>
+      <div className="flex flex-col space-y-2">
+        <label className="text-lg font-semibold text-gray-700">Dimensions</label>
+        <div className="flex space-x-4">
+          <div className="flex flex-col w-1/4">
+            <label className="text-sm text-gray-600">Length</label>
             <input
               type="number"
-              name="length"
-              placeholder="Length"
-              value={formData.dimensions.length}
-              onChange={(e) => handleInputChange({ target: { name: 'dimensions', value: { ...formData.dimensions, length: e.target.value } } })}
-              className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+              value={length}
+              onChange={(e) => setLength(e.target.value)}
+              className="p-2 border border-gray-300 rounded-md"
             />
+          </div>
+          <div className="flex flex-col w-1/4">
+            <label className="text-sm text-gray-600">Width</label>
             <input
               type="number"
-              name="width"
-              placeholder="Width"
-              value={formData.dimensions.width}
-              onChange={(e) => handleInputChange({ target: { name: 'dimensions', value: { ...formData.dimensions, width: e.target.value } } })}
-              className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+              value={width}
+              onChange={(e) => setWidth(e.target.value)}
+              className="p-2 border border-gray-300 rounded-md"
             />
+          </div>
+          <div className="flex flex-col w-1/4">
+            <label className="text-sm text-gray-600">Height</label>
             <input
               type="number"
-              name="height"
-              placeholder="Height"
-              value={formData.dimensions.height}
-              onChange={(e) => handleInputChange({ target: { name: 'dimensions', value: { ...formData.dimensions, height: e.target.value } } })}
-              className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+              value={height}
+              onChange={(e) => setHeight(e.target.value)}
+              className="p-2 border border-gray-300 rounded-md"
             />
+          </div>
+          <div className="flex flex-col w-1/4">
+            <label className="text-sm text-gray-600">Weight</label>
             <input
               type="number"
-              name="weight"
-              placeholder="Weight"
-              value={formData.dimensions.weight}
-              onChange={(e) => handleInputChange({ target: { name: 'dimensions', value: { ...formData.dimensions, weight: e.target.value } } })}
-              className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+              value={weight}
+              onChange={(e) => setWeight(e.target.value)}
+              className="p-2 border border-gray-300 rounded-md"
             />
           </div>
         </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Stock</label>
-          <input
-            type="number"
-            name="stock"
-            value={formData.stock}
-            onChange={handleInputChange}
-            className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Images</label>
-          <input
-            type="file"
-            multiple
-            onChange={handleImageChange}
-            className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-          />
-        </div>
-        <button
-          type="submit"
-          className="w-full py-2 px-4 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700"
-        >
-          Add Product
-        </button>
-        {message && <p className="text-center mt-4">{message}</p>}
-      </form>
-    </div>
+      </div>
+      <div className="flex flex-col">
+        <label className="mb-2 text-lg font-semibold text-gray-700">Stock</label>
+        <input
+          type="number"
+          value={stock}
+          onChange={(e) => setStock(e.target.value)}
+          className="p-2 border border-gray-300 rounded-md"
+        />
+      </div>
+      <button type="submit" className="w-full py-2 px-4 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600">
+        Submit
+      </button>
+    </form>
   );
 };
 
-export default AddProductForm;
+export default ProductForm;
