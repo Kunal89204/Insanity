@@ -4,8 +4,7 @@ const upload = require("../middlewares/multer.middleware")
 
 const {addProduct, getProduct, getSingleProduct, deleteProduct, updateProduct} =require("../controllers/productControllers")
 
-// router.post("/addProduct", upload.array("img") , addProduct)
-router.post("/addProduct",  addProduct)
+router.post("/addProduct", upload.fields([{ name: "images" }, { name: "video" }]),  addProduct);
 
 router.get("/getProduct", getProduct)
 
@@ -16,4 +15,6 @@ router.delete("/deleteProduct/:id", deleteProduct)
 router.put("/updateProduct/:id", updateProduct)
 
 module.exports = router
+
+
 

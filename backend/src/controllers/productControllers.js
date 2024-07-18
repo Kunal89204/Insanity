@@ -1,12 +1,13 @@
 const Product = require("../models/product.model");
 
+
 const addProduct = async (req, res) => {
   try {
-       
-      res.json({name, price})
+    const {name} = req.body
+    console.log(name)
+    res.json(name)
   } catch (error) {
-      console.log(error)
-      
+    console.log(error)
   }
 }
 

@@ -2,6 +2,12 @@ import React, { useState } from 'react';
 import useLogin from '../hooks/useLogin'
 import { useNavigate } from 'react-router-dom';
 import Popup from '../components/Popup';
+import {
+  Alert,
+  AlertIcon,
+  AlertTitle,
+  AlertDescription,
+} from '@chakra-ui/react'
 
 
 const Login = () => {
@@ -41,7 +47,7 @@ const Login = () => {
       return;
     }
 
-    loginHook(formData)
+    loginHook(formData, setPopup, setPopupValue)
    
   };
 

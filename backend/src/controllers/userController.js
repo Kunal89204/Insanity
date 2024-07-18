@@ -12,7 +12,7 @@ const loginUser = async (req, res) => {
 
     const isPasswordValid = await existingUser.comparePassword(password);
     if (!isPasswordValid) {
-      return res.json({ message: "Invalid username or password" });
+      return res.json({ message: "Invalid  password" });
     }
 
      // Generate access and refresh tokens

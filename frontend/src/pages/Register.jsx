@@ -40,7 +40,7 @@ const Register = () => {
       return;
     }
 
- registerHook(formData)
+ registerHook(formData, setPopup, setPopupValue)
 
     
   };

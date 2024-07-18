@@ -5,7 +5,7 @@ import {useAuthStore} from '../context/store'
 const useLogin = () => {
     const {login} = useAuthStore()
 
-    const loginHook = (data) => {
+    const loginHook = (data, setPopup, setPopupValue) => {
         
         axios.post('http://localhost:8000/api/v1/login', data)
         .then((respo) => {
@@ -14,7 +14,12 @@ const useLogin = () => {
                 localStorage.setItem('user', JSON.stringify(respo.data))
                 login(respo.data)
             }else {
-                console.log(respo.data.message);
+              setPopupValue(respo.data.message);
+              setPopup(true);
+
+              setTimeout(() => {
+                setPopup(false);
+              }, 2000);
               }
         }).catch((error) => {
             console.log(error);
