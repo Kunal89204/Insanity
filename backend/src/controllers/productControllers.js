@@ -4,7 +4,7 @@ const Product = require("../models/product.model");
 const addProduct = async (req, res) => {
   try {
     const {name} = req.body
-    console.log(name)
+    console.log(req.body)
     res.json(name)
   } catch (error) {
     console.log(error)

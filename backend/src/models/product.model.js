@@ -20,7 +20,6 @@ const productSchema = new mongoose.Schema(
     category: [{ type: mongoose.Schema.Types.ObjectId, ref: "category" }],
     reviews:[{type:mongoose.Schema.Types.ObjectId, ref: "review"}],
     description: { type: String },
-    owner: { type: mongoose.Schema.Types.ObjectId, ref: "user" },
     dimensions: {
       length: Number,
       width: Number,
