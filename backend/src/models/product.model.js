@@ -10,15 +10,15 @@ const productSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-   
+
     discountedPrice: {
       type: Number,
     },
-    
-    images:[{type:String}],
-    video:{type:String},
-    category: [{ type: mongoose.Schema.Types.ObjectId, ref: "category" }],
-    reviews:[{type:mongoose.Schema.Types.ObjectId, ref: "review"}],
+
+    images: [{ type: String }],
+    video: { type: String },
+    category: { type: mongoose.Schema.Types.ObjectId, ref: "category" },
+    reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: "review" }],
     description: { type: String },
     dimensions: {
       length: Number,

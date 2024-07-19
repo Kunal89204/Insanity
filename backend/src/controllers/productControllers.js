@@ -3,17 +3,58 @@ const Product = require("../models/product.model");
 
 const addProduct = async (req, res) => {
   try {
-    const {name} = req.body
-    console.log(req.body)
-    res.json(name)
-  } catch (error) {
-    console.log(error)
-  }
-}
+    let { name, price, discountedPrice, category, description, stock, dimensions } = req.body;
+    const images = req.files?.images || [];
+    const video = req.files?.video ? req.files.video[0] : null;
 
+    // Validation for compulsory fields
+    if (!name || !price || images.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Name, price, and at least one image are required.",
+      });
+    }
+
+    // Extracting filenames from the uploaded files
+    const imageFilenames = images.map((file) => file.filename);
+    const videoFilename = video ? video.filename : null;
+    dimensions = JSON.parse(dimensions)
+
+    const product = new Product({
+      name,
+      price,
+      discountedPrice,
+      images: imageFilenames,
+      video: videoFilename,
+      category,
+      description,
+      stock,
+      dimensions: {
+        length: dimensions.length,
+        width: dimensions.width,
+        height: dimensions.height,
+        weight: dimensions.weight,
+      },
+    });
+
+    await product.save();
+
+    res.status(201).json({
+      success: true,
+      message: "Product added successfully",
+      data: product,
+    });
+  } catch (error) {
+    console.error('Error adding product:', error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
 const getProduct = async (req, res) => {
   try {
-    const productData = await Product.find() .populate('owner')
+    const productData = await Product.find()
     .populate('category');
     res.json(productData);
   } catch (error) {

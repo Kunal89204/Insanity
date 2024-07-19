@@ -9,6 +9,7 @@ import Profile from './pages/Profile';
 import AddCategory from './pages/admin/AddCategory';
 import { useAuthStore } from './context/store';
 import ProtectedRoute from './components/ProtectedRoute';
+import Category from './pages/Category'
 import AdminProtectedRoute from './components/AdminProtectedRoute';
 
 const App = () => {
@@ -24,6 +25,7 @@ const App = () => {
       <Routes>
         <Route path='/' element={<ProtectedRoute><Home /></ProtectedRoute>} />
         <Route path='/profile/:username' element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+        <Route path='/category/:name' element={<ProtectedRoute><Category /></ProtectedRoute>} />
         <Route path='/login' element={!user ? <Login /> : <Navigate to="/" />} />
         <Route path='/register' element={!user ? <Register /> : <Navigate to="/" />} />
         <Route path='/admin/*' element={<ProtectedRoute><Admin /></ProtectedRoute>} />

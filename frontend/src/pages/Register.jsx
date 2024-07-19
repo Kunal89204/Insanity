@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import useRegister from '../hooks/useRegister';
-import {useNavigate} from 'react-router-dom'
-import Popup from '../components/Popup';
+import { Box, Button, FormControl, FormLabel, Input, Text, VStack, Alert, AlertIcon } from '@chakra-ui/react';
 
 const Register = () => {
-  const {registerHook} = useRegister()
-  const [popup, setPopup] = useState(false)
-  const [popupValue, setPopupValue] = useState("")
+  const { registerHook } = useRegister();
+  const [popup, setPopup] = useState(false);
+  const [popupValue, setPopupValue] = useState("");
   const [formData, setFormData] = useState({
     fullname: '',
     username: '',
@@ -40,64 +39,71 @@ const Register = () => {
       return;
     }
 
- registerHook(formData, setPopup, setPopupValue)
-
-    
+    registerHook(formData, setPopup, setPopupValue);
   };
 
   return (
-    <div className='bg-[#F4F2EE] h-screen flex items-center justify-center'>
-      {popup && <Popup value={popupValue}/>}
-      <div className='bg-[#f0eadf] p-8 rounded-lg shadow-md w-full max-w-md'>
-        <h1 className='text-2xl font-bold mb-6 text-center'>Register</h1>
+    <Box bg='#F4F2EE' h='100vh' display='flex' alignItems='center' justifyContent='center'>
+      {popup && (
+        <Alert status='error' position='fixed' top={4} width='80%' maxWidth='md' zIndex={1}>
+          <AlertIcon />
+          {popupValue}
+        </Alert>
+      )}
+      <Box bg='#f0eadf' p={8} rounded='lg' shadow='md' w='full' maxW='md'>
+        <Text fontSize='2xl' fontWeight='bold' mb={6} textAlign='center'>Register</Text>
         <form onSubmit={handleSubmit}>
-          <div className='mb-4'>
-            <label htmlFor="fullname" className='block text-sm font-medium text-gray-700'>Fullname</label>
-            <input 
-              type="text" 
-              name="fullname" 
-              id="fullname" 
-              value={formData.fullname}
-              onChange={handleChange}
-              className={`mt-1 block w-full p-2 border rounded-md ${errors.fullname ? 'border-red-500' : 'border-gray-300'}`}
-            />
-            {errors.fullname && <p className='text-red-500 text-xs mt-1'>{errors.fullname}</p>}
-          </div>
-          <div className='mb-4'>
-            <label htmlFor="username" className='block text-sm font-medium text-gray-700'>Username</label>
-            <input 
-              type="text" 
-              name="username" 
-              id="username" 
-              value={formData.username}
-              onChange={handleChange}
-              className={`mt-1 block w-full p-2 border rounded-md ${errors.username ? 'border-red-500' : 'border-gray-300'}`}
-            />
-            {errors.username && <p className='text-red-500 text-xs mt-1'>{errors.username}</p>}
-          </div>
-          <div className='mb-4'>
-            <label htmlFor="password" className='block text-sm font-medium text-gray-700'>Password</label>
-            <input 
-              type="password" 
-              name="password" 
-              id="password" 
-              value={formData.password}
-              onChange={handleChange}
-              className={`mt-1 block w-full p-2 border rounded-md ${errors.password ? 'border-red-500' : 'border-gray-300'}`}
-            />
-            {errors.password && <p className='text-red-500 text-xs mt-1'>{errors.password}</p>}
-          </div>
-          <div className='mt-6'>
-            <button 
-              type="submit" 
-              className='w-full bg-orange-300 text-white p-2 rounded-md hover:bg-blue-600 transition duration-200'
+          <VStack spacing={4}>
+            <FormControl isInvalid={errors.fullname}>
+              <FormLabel htmlFor="fullname">Fullname</FormLabel>
+              <Input
+                type="text"
+                name="fullname"
+                id="fullname"
+                value={formData.fullname}
+                onChange={handleChange}
+                borderColor='gray.300'
+                focusBorderColor='blue.500'
+              />
+              {errors.fullname && <Text color='red.500' fontSize='sm'>{errors.fullname}</Text>}
+            </FormControl>
+            <FormControl isInvalid={errors.username}>
+              <FormLabel htmlFor="username">Username</FormLabel>
+              <Input
+                type="text"
+                name="username"
+                id="username"
+                value={formData.username}
+                onChange={handleChange}
+                borderColor='gray.300'
+                focusBorderColor='blue.500'
+              />
+              {errors.username && <Text color='red.500' fontSize='sm'>{errors.username}</Text>}
+            </FormControl>
+            <FormControl isInvalid={errors.password}>
+              <FormLabel htmlFor="password">Password</FormLabel>
+              <Input
+                type="password"
+                name="password"
+                id="password"
+                value={formData.password}
+                onChange={handleChange}
+                borderColor='gray.300'
+                focusBorderColor='blue.500'
+              />
+              {errors.password && <Text color='red.500' fontSize='sm'>{errors.password}</Text>}
+            </FormControl>
+            <Button
+              type="submit"
+              colorScheme='orange'
+              width='full'
             >
               Register
-            </button>
-          </div>
+            </Button>
+          </VStack>
         </form>
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };
 

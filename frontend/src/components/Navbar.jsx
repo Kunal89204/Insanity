@@ -1,115 +1,95 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Logo from "../assets/logo.png";
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router-dom';
 import { MdOutlineShoppingBag } from "react-icons/md";
 import { FaRegUser } from "react-icons/fa";
 import { useAuthStore } from '../context/store';
-
-
+import axios from 'axios';
+import {
+  Box,
+  Button,
+  FormControl,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  Image,
+  Input,
+  HStack,
+  VStack,
+  Text,
+} from '@chakra-ui/react';
+import { ChevronDownIcon } from '@chakra-ui/icons';
 
 const Navbar = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const { logout, user } = useAuthStore()
+  const [categories, setCategories] = useState([]);
+  const [category, setCategory] = useState([]);
+  const { logout, user } = useAuthStore();
 
+  useEffect(() => {
+    axios.get('http://localhost:8000/api/v1/getCategory')
+      .then((res) => {
+        setCategories(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
 
-  const toggleDropdown = () => {
-    setIsOpen(!isOpen);
-  };
-
-  const toggleProfileDropdown = () => {
-    setIsProfileOpen(!isProfileOpen);
-  };
-
-  const handleProfileClick = () => {
-    setIsProfileOpen(false); // Close dropdown after click (optional)
-    // Additional logic for profile link click
-  };
-
-  const handleSelect = (category) => {
-    console.log(`Selected category: ${category}`);
-    setIsOpen(false);
-  };
+  const selectedCategoryName = categories.find(cat => cat._id === category)?.name || 'Shop By Category';
 
   return (
-    <div className='flex items-center justify-around p-4 bg-[#F4F2EE] shadow-md'>
+    <Box className='flex items-center justify-around p-4 bg-[#F4F2EE] shadow-md'>
+      <Box className='w-[16vw]'>
+        <Link to={'/'}><Image src={Logo} alt="Logo" className='h-10' /></Link>
+      </Box>
 
-      <div className='w-[18vw]'>
-        <Link to={'/'}><img src={Logo} alt="Logo" className='h-10' /></Link>
-      </div>
+      <Box className='relative ml-4 bg-[#f0eadf] py-1 px-1 rounded'>
+        <FormControl>
+          <Menu bg={'#f0eadf'}>
+            <MenuButton as={Button} bg={'#f0eadf'} rightIcon={<ChevronDownIcon />}>
+              {selectedCategoryName}
+            </MenuButton>
+            <MenuList bg={'#f0eadf'}>
+              {categories.map((cat, i) => (
+                <Link key={i} to={`/category/${cat.name}`}>
+                  <MenuItem bg={'#f0eadf'} onClick={() => setCategory(cat._id)}>
+                    {cat.name}
+                  </MenuItem>
+                </Link>
+              ))}
+            </MenuList>
+          </Menu>
+        </FormControl>
+      </Box>
 
-      <div className='relative ml-4 bg-[#f0eadf] py-2 px-6 rounded'>
-        <div className='flex items-center cursor-pointer' onClick={toggleDropdown}>
-          <button>Shop By Category</button>
-          <svg
-            className={`w-5 h-5 ml-2 transition-transform duration-200 ${isOpen ? 'rotate-180' : 'rotate-0'}`}
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
-          </svg>
-        </div>
-        {isOpen && (
-          <ul className="absolute mt-2 bg-[#f1eee8]  border border-gray-300 rounded-md shadow-lg z-10 w-48">
-            <li
-              className="cursor-pointer py-2 px-4 hover:bg-gray-100"
-              onClick={() => handleSelect('Electronics')}
-            >
-              Electronics
-            </li>
-            <li
-              className="cursor-pointer py-2 px-4 hover:bg-gray-100"
-              onClick={() => handleSelect('Clothing')}
-            >
-              Clothing
-            </li>
-            <li
-              className="cursor-pointer py-2 px-4 hover:bg-gray-100"
-              onClick={() => handleSelect('Home & Kitchen')}
-            >
-              Home & Kitchen
-            </li>
-            <li
-              className="cursor-pointer py-2 px-4 hover:bg-gray-100"
-              onClick={() => handleSelect('Books')}
-            >
-              Books
-            </li>
-          </ul>
-        )}
-      </div>
+      <HStack spacing={10} px={10}>
+        <Link to={'/'}>Home</Link>
+        <Link to={'/'}>Shop</Link>
+        <Link to={'/'}>Products</Link>
+        <Link to={'/'}>About Us</Link>
+      </HStack>
 
+      <Box>
+        <Input type="text" placeholder='Search' className='bg-white border-gray-300 rounded-lg' />
+      </Box>
 
-      <nav className='flex gap-10 px-10'>
-        <div><Link to={'/'}>Home</Link></div>
-        <div><Link to={'/'}>Shop</Link></div>
-        <div><Link to={'/'}>Products</Link></div>
-        <div><Link to={'/'}>About Us</Link></div>
-      </nav>
-
-
-      <div>
-        <input type="text" placeholder='Search' className='bg-white border-gray-300 rounded-lg' />
-      </div>
-
-
-      <div className='scale-150'>
+      <Box className='scale-150'>
         <Link><MdOutlineShoppingBag /></Link>
-      </div>
+      </Box>
 
-      <div className='relative'>
-        <button onClick={toggleProfileDropdown}>
+      <Menu>
+        <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
           <FaRegUser />
-        </button>
-
-        <div className={`absolute border ${isProfileOpen?'block':'hidden'} bg-[#F4F2EE] right-0 rounded p-4 shadow shadow-black`}>
-          <Link to={`/profile/${user.username}`}><div className='border-b px-6 pb-2' onClick={handleProfileClick}>Profile</div></Link>
-          <div onClick={logout} className='cursor-pointer px-6 pt-2' >Logout</div>
-        </div>
-      </div>
-    </div>
+        </MenuButton>
+        <MenuList>
+          <Link to={`/profile/${user.username}`}>
+            <MenuItem>Profile</MenuItem>
+          </Link>
+          <MenuItem onClick={logout}>Logout</MenuItem>
+        </MenuList>
+      </Menu>
+    </Box>
   );
 };
 
