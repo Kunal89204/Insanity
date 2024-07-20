@@ -12,7 +12,7 @@ const {
 
 router.post("/addCategory", upload.fields([{ name: 'thumbnail', maxCount: 1 }, { name: 'banner', maxCount: 1 }]), addCategory);
 router.put("/updateCategory/:id",upload.fields([{ name: 'thumbnail', maxCount: 1 }, { name: 'banner', maxCount: 1 }]), updateCategory);
-router.delete("/deleteCategory/:id", deleteCategory);
+router.delete("/deleteCategory", deleteCategory);
 router.get("/getCategory", getCategory);
 router.get("/eachCategory/:name", eachCategory);
 

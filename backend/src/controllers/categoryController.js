@@ -1,11 +1,12 @@
 const Category = require("../models/category.model");
 const Product = require('../models/product.model')
+const { uploadOnCloudinary, deleteFromCloudinary } = require("../utils/cloudinary")
 
 const addCategory = async (req, res) => {
     try {
         const { name, description, subCategories } = req.body;
-        const thumbnail = req.files['thumbnail'][0].filename;
-        const banner = req.files['banner'][0].filename;
+        const thumbnailLocalpath = req.files['thumbnail'][0].path;
+        const bannerLocalpath = req.files['banner'][0].path;
 
         // Check if category with the same name already exists
         const existingCategory = await Category.findOne({ name });
@@ -16,13 +17,16 @@ const addCategory = async (req, res) => {
         // Ensure subCategories is an array of strings
         const subCategoriesArray = Array.isArray(subCategories) ? subCategories : subCategories.split(",").map(subCategory => subCategory.trim());
 
+        const thumbnail = await uploadOnCloudinary(thumbnailLocalpath)
+        const banner = await uploadOnCloudinary(bannerLocalpath)
+
         // Create a new category instance
         const newCategory = new Category({
             name,
             description,
             images: {
-                thumbnail,
-                banner
+                thumbnail: thumbnail.url,
+                banner: banner.url
             },
             subCategories: subCategoriesArray // Ensure subCategories is an array
         });
@@ -36,7 +40,6 @@ const addCategory = async (req, res) => {
         res.status(500).json({ message: "Failed to add category", error: error.message });
     }
 };
-
 
 const updateCategory = async (req, res) => {
     try {
@@ -88,24 +91,56 @@ const getCategory = async (req, res) => {
 
 const deleteCategory = async (req, res) => {
     try {
-        const id = req.params.id;
+        const { id, bannerId, thumbnailId } = req.body;
 
-        const deletedCategory = await Category.findByIdAndDelete(id)
 
-        res.json(deletedCategory)
+
+        // Proceed with your deletion logic
+        const deletedCategory = await Category.findByIdAndDelete(id);
+        // Also delete the banner and thumbnail as needed
+
+        const getbannerIdFromUrl = (url) => {
+            const parts = url.split('/');
+            const fileName = parts[parts.length - 1];
+            const publicId = fileName.split('.')[0];
+            return publicId;
+        };
+        const getthumbnailIdFromUrl = (url) => {
+            const parts = url.split('/');
+            const fileName = parts[parts.length - 1];
+            const publicId = fileName.split('.')[0];
+            return publicId;
+        };
+
+        const deletePromises = [
+            deleteFromCloudinary(getbannerIdFromUrl(bannerId)),
+            deleteFromCloudinary(getthumbnailIdFromUrl(thumbnailId))
+        ]
+
+        const response = await Promise.all(deletePromises)
+
+        response.forEach((respo) => {
+            console.log(respo)
+        })
+
+
+
+        res.status(200).json({ message: 'Category deleted successfully' });
     } catch (error) {
-        console.log(error)
+        console.log(error);
+        res.status(500).json({ message: 'Error deleting category', error });
     }
-}
+};
+
 
 
 const eachCategory = async (req, res) => {
     try {
-        const name = req.params.name       
-        const data = await Category.findOne({name})
+        const name = req.params.name
+        const data = await Category.findOne({ name })
         const catId = data._id
-        const Products = await Product.find({category:catId})
-        res.json({data, Products})
+        const Products = await Product.find({ category: catId })
+        res.json({ data, Products })
     } catch (error) {
         console.log(error)
     }

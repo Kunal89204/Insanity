@@ -19,15 +19,23 @@ const Categories = () => {
         fetchCategories();
     }, []); // Empty array means this effect runs once, equivalent to componentDidMount
 
-    const handleDelete = (id) => {
-        axios.delete(`http://localhost:8000/api/v1/deleteCategory/${id}`)
-            .then(() => {
-                fetchCategories(); // Fetch categories again after successful delete
-            })
-            .catch((error) => {
-                console.error('Error deleting category:', error);
-            });
-    }
+    const handleDelete = (id, bannerId, thumbnailId) => {
+        axios.delete('http://localhost:8000/api/v1/deleteCategory', {
+            data: {
+                id,
+                bannerId,
+                thumbnailId
+            }
+        })
+        .then(() => {
+            fetchCategories(); // Fetch categories again after successful delete
+        })
+        .catch((error) => {
+            console.error('Error deleting category:', error);
+        });
+    };
+    
+    
 
     return (
         <div className="container mx-auto px-4 py-8">
@@ -38,9 +46,9 @@ const Categories = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {categories.map((category) => (
                     <div key={category._id} className="bg-white rounded-lg shadow-md overflow-hidden relative">
-                        <img src={`http://localhost:8000/uploads/${category.images.banner}`} alt={category.name} className="w-full h-40 object-cover" />
+                        <img src={`${category.images.banner}`} alt={category.name} className="w-full h-40 object-cover" />
                         <div className="absolute top-28 left-4">
-                            <img src={`http://localhost:8000/uploads/${category.images.thumbnail}`} alt={`${category.name} thumbnail`} className="w-16 h-16 rounded-full border-2 border-white" />
+                            <img src={`${category.images.thumbnail}`} alt={`${category.name} thumbnail`} className="w-16 h-16 rounded-full border-2 border-white" />
                         </div>
                         <div className="p-4">
                             <h2 className="text-xl font-bold mb-2">{category.name}</h2>
@@ -52,7 +60,7 @@ const Categories = () => {
                             </div>
                             <div className="flex justify-between">
                                 <Link to={`/category/${category._id}`} className="text-black py-1 px-6 rounded bg-[#F4F2EE] hover:underline">Edit Category</Link>
-                                <button onClick={() => handleDelete(category._id)} className="text-white py-1 px-6 rounded bg-red-600 hover:underline">Delete</button>
+                                <button onClick={() => handleDelete(category._id, category.images.banner, category.images.thumbnail)} className="text-white py-1 px-6 rounded bg-red-600 hover:underline">Delete</button>
                             </div>
                         </div>
                     </div>

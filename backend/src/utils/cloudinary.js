@@ -20,8 +20,8 @@ const uploadOnCloudinary = async (localFilePath) => {
       resource_type: "auto",
     });
 
+    fs.unlinkSync(localFilePath)
     // file has been uploaded successfully
-
     console.log("file uploaded successfully", response.url);
     return response;
   } catch (error) {
@@ -29,7 +29,18 @@ const uploadOnCloudinary = async (localFilePath) => {
   }
 };
 
+const deleteFromCloudinary = async (publicId) => {
+  try {
+    const response = await cloudinary.uploader.destroy(publicId);
+    console.log("File deleted successfully", response);
+    return response;
+  } catch (error) {
+    console.error("Error deleting file from Cloudinary:", error);
+    throw error;
+  }
+};
 
 
-module.exports = {uploadOnCloudinary}
+
+module.exports = {uploadOnCloudinary, deleteFromCloudinary}
 

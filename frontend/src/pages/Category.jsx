@@ -15,7 +15,7 @@ const Category = () => {
     })
   return (
     <div>
-      <div ><img className='h-60 w-full m-auto' src="https://t4.ftcdn.net/jpg/05/08/17/01/360_F_508170187_4Oonk4IG8u9eyfwSUvTASkT8hl71vRX2.jpg" alt="" /></div>
+      <div ><img className='h-60 w-full m-auto' src="https://www.shutterstock.com/image-illustration/interior-design-concept-sale-home-260nw-2176522145.jpg" alt="" /></div>
     </div>
   )
 }
