@@ -19,7 +19,7 @@ import {
   MenuButton,
   MenuList,
   MenuItem,
-
+  useToast
 } from '@chakra-ui/react';
 import { ChevronDownIcon } from '@chakra-ui/icons';
 
@@ -33,6 +33,9 @@ const AddProducts = () => {
   const [stock, setStock] = useState(0);
   const [categories, setCategories] = useState([]);
   const [category, setCategory] = useState('');
+
+
+  const toast = useToast()
   const [dimensions, setDimensions] = useState({
     length: 0,
     width: 0,
@@ -44,6 +47,12 @@ const AddProducts = () => {
   const [imagePreviews, setImagePreviews] = useState([]);
   const [videoPreview, setVideoPreview] = useState("");
   const selectedCategoryName = categories.find(cat => cat._id === category)?.name || 'Select Category';
+  
+  
+     
+   
+  
+
   useEffect(() => {
     axios.get('http://localhost:8000/api/v1/getCategory')
       .then((res) => {
@@ -69,6 +78,7 @@ const AddProducts = () => {
   };
 
   const handleImageChange = (e) => {
+    
     const files = Array.from(e.target.files);
     setImages(files);
     setImagePreviews(files.map(file => URL.createObjectURL(file)));
@@ -76,6 +86,12 @@ const AddProducts = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+  
+    if (name !== "" && price !== 0) {
+      setSpinner(true);
+    }
+  
     const formData = new FormData();
     formData.append('name', name);
     formData.append('price', price);
@@ -86,26 +102,33 @@ const AddProducts = () => {
     formData.append('category', category);
     formData.append('video', video);
     images.forEach(image => formData.append('images', image));
-
-    axios.post('http://localhost:8000/api/v1/addProduct', formData, {
+  
+    const addProductPromise = axios.post('http://localhost:8000/api/v1/addProduct', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
-    })
+    });
+  
+    toast.promise(addProductPromise, {
+      loading: { title: 'Submitting', description: 'Please wait while we add your product.' },
+      success: { title: 'Product Added', description: 'Your product has been added successfully.' },
+      error: { title: 'Error', description: 'There was an error adding your product.' },
+    });
+  
+    addProductPromise
       .then(response => {
         console.log('Product added successfully:', response.data);
+        setSpinner(false);
       })
       .catch(error => {
-        console.error('Error adding product:', error.response.data.message);
-        setPopupValue(error.response.data.message)
-        setPopup(true)
+        console.error('Error adding product:', error.response?.data?.message || error.message);
+        setPopupValue(error.response?.data?.message || error.message);
+        setPopup(true);
         setTimeout(() => {
-          setPopup(false)
+          setPopup(false);
         }, 2500);
       });
-      
   };
-
   return (
     <Box maxW="2xl" mx="auto" mt="8" p="4" borderWidth="1px" borderRadius="lg" boxShadow="md">
         {popup && <Popup value={popupValue} />}
@@ -200,7 +223,7 @@ const AddProducts = () => {
               </Box>
             )}
           </FormControl>
-          <Button type="submit" colorScheme="blue" w="full">Submit</Button>
+          <Button type="submit" colorScheme="blue" w="full">Submit </Button>
         </VStack>
       </form>
     </Box>

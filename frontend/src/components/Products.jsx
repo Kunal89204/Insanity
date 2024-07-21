@@ -17,7 +17,7 @@ const Products = () => {
     <div className='p-10 bg-[#F4F2EE]'>
       <h1 className='italy-font text-6xl '>Latest Products</h1>
 
-      <div className='flex py-4'>
+      <div className='flex flex-wrap justify-around py-4 '>
       {products && products.map((item, i) => (
         <Product key={i} imgurl={item.images[0]} name={item.name} discount={item.discountedPrice} price={item.price} />  
       ))}      

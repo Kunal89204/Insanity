@@ -16,6 +16,22 @@ const Products = () => {
       });
   };
 
+  const handleDelete = (id, images, video) => {
+    
+    axios.delete(`http://localhost:8000/api/v1/deleteProduct/${id}`, {
+      data: {
+        images, 
+        video
+      }
+    })
+      .then(() => {
+        fetchProducts(); // Fetch products again after successful delete
+      })
+      .catch((error) => {
+        console.error('Error deleting product:', error);
+      });
+  };
+
   useEffect(() => {
     fetchProducts();
   }, []);
@@ -24,7 +40,7 @@ const Products = () => {
     <Box maxW="container.xl" mx="auto" px={4} py={8}>
       <Flex mb={6} justify="space-between" align="center">
         <Heading size="lg">Products</Heading>
-        <Link to="/admin/addProduct">
+        <Link to="/admin/addProducts">
           <Button colorScheme="teal">Add Product</Button>
         </Link>
       </Flex>
@@ -42,7 +58,7 @@ const Products = () => {
             position="relative"
           >
             <Image
-              src={`http://localhost:8000/uploads/${product.images[0]}`}
+              src={`${product.images[0]}`}
               alt={product.name}
               objectFit="cover"
               boxSize="100%"
@@ -57,7 +73,7 @@ const Products = () => {
                 <Link to={`/product/${product._id}`}>
                   <Button colorScheme="blue">View Details</Button>
                 </Link>
-                <Button colorScheme="red" onClick={() => handleDelete(product._id)}>Delete</Button>
+                <Button colorScheme="red" onClick={() => handleDelete(product._id, product.images, product.video)}>Delete</Button>
               </Flex>
             </VStack>
           </Box>
@@ -67,14 +83,6 @@ const Products = () => {
   );
 };
 
-const handleDelete = (id) => {
-  axios.delete(`http://localhost:8000/api/v1/deleteProduct/${id}`)
-    .then(() => {
-      fetchProducts(); // Fetch products again after successful delete
-    })
-    .catch((error) => {
-      console.error('Error deleting product:', error);
-    });
-};
+
 
 export default Products;

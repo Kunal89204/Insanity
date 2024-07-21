@@ -1,4 +1,6 @@
 const Product = require("../models/product.model");
+const { uploadOnCloudinary, deleteFromCloudinary } = require("../utils/cloudinary");
+
 
 
 const addProduct = async (req, res) => {
@@ -15,17 +17,29 @@ const addProduct = async (req, res) => {
       });
     }
 
-    // Extracting filenames from the uploaded files
-    const imageFilenames = images.map((file) => file.filename);
-    const videoFilename = video ? video.filename : null;
-    dimensions = JSON.parse(dimensions)
+    // Upload images to Cloudinary
+    const imageUploadPromises = images.map((image) => uploadOnCloudinary(image.path, "image"));
+    const uploadedImages = await Promise.all(imageUploadPromises);
+    const imageUrls = uploadedImages.map((img) => img.secure_url);
+    const imagePublicIds = uploadedImages.map((img) => img.public_id);
+
+    // Upload video to Cloudinary (if provided)
+    let videoUrl = null;
+    let videoPublicId = null;
+    if (video) {
+      const uploadedVideo = await uploadOnCloudinary(video.path, "video");
+      videoUrl = uploadedVideo.secure_url;
+      videoPublicId = uploadedVideo.public_id;
+    }
+
+    dimensions = JSON.parse(dimensions);
 
     const product = new Product({
       name,
       price,
       discountedPrice,
-      images: imageFilenames,
-      video: videoFilename,
+      images: imageUrls,
+      video: videoUrl,
       category,
       description,
       stock,
@@ -72,16 +86,58 @@ const getSingleProduct = async (req, res) => {
   }
 };
 
+
+
+
+
+
 const deleteProduct = async (req, res) => {
   try {
     const id = req.params.id;
+    const { images, video } = req.body;
 
+    // Delete the product from the database
     const deletedProduct = await Product.findByIdAndDelete(id);
-    res.json(deletedProduct);
+
+    // Function to extract the public ID from the Cloudinary URL
+    const getPublicIdFromUrl = (url) => {
+      const parts = url.split('/');
+      const fileName = parts[parts.length - 1];
+      const publicId = fileName.split('.')[0];
+      return publicId;
+    };
+
+    // Collect all the delete promises for images
+    const imageDeletePromises = images.map((image) => {
+      const publicId = getPublicIdFromUrl(image);
+      console.log('Deleting image with public ID:', publicId);
+      return deleteFromCloudinary(publicId);
+    });
+
+    // Collect the delete promise for the video
+    const videoPublicId = getPublicIdFromUrl(video);
+    console.log('Deleting video with public ID:', videoPublicId);
+    const videoDeletePromise = deleteFromCloudinary(videoPublicId, 'video');
+
+    // Execute all delete promises
+    const response = await Promise.all([...imageDeletePromises, videoDeletePromise]);
+
+    response.forEach((respo) => {
+      console.log('Delete response:', respo);
+    });
+
+    res.status(200).json({ message: 'Product deleted successfully', deletedProduct });
   } catch (error) {
     console.log(error);
+    res.status(500).json({ message: 'Error deleting product', error });
   }
 };
+
+
+
+
+
+
 
 const updateProduct = async (req, res) => {
   try {

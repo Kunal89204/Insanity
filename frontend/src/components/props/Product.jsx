@@ -17,7 +17,7 @@ const Product = ({imgurl, name, discount, price}) => {
   return (
     <div className='w-1/4 bg-white p-4 shadow-md rounded-3xl'>
             <p className='italy-font'>Sofa</p>
-            <div><img src={`http://localhost:8000/uploads/${imgurl}`} className='rounded-3xl' alt="" /></div>
+            <div><img src={`${imgurl}`} className='rounded-3xl' alt="" /></div>
             <div>
                 <strong className='italy-font text-xl'>{name}</strong>
                 <div className='inria-sans-light flex gap-2 py-1 '>

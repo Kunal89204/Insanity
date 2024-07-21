@@ -23,7 +23,7 @@ const Categories = () => {
 
       {categories && categories.map((cat) => (
         <div className='w-32' key={cat._id}>
-          <div className=''><img src={`http://localhost:8000/uploads/${cat.images.thumbnail}`} alt="" className='rounded-full aspect-square'/></div>
+          <div className=''><img src={`${cat.images.thumbnail}`} alt="" className='rounded-full aspect-square'/></div>
           <p className='text-center'>{cat.name}</p>
         </div>
       ))}

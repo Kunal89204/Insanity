@@ -9,8 +9,8 @@ import Categories from './Categories';
 
 const Admin = () => {
   return (
-    <div className='bg-gray-50 w-screen h-screen flex'>
-      <div className='w-40 h-full bg-gray-100'>
+    <div className='bg-gray-50 w-screen  flex'>
+      <div className='w-40  bg-gray-100'>
         <ul>
           <li className='py-2 hover:bg-gray-200 pl-5'><Link to="products">Products</Link></li>
           <li className='py-2 hover:bg-gray-200 pl-5'><Link to="users">Users</Link></li>
