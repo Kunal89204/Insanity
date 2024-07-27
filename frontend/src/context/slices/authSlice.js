@@ -14,7 +14,7 @@ export const createAuthSlice = (set) => ({
       },
 
       validateToken: async () => {
-        const user = JSON.parse(localStorage.getItem('user'));
+        const user = JSON.parse(localStorage.getItem('user')) || false;
     
         if (user && user.accessToken) {
           try {
@@ -28,7 +28,8 @@ export const createAuthSlice = (set) => ({
               set({ user });
             } else {
               localStorage.removeItem('user');
-              set({ user: null });
+              set({ user: false });
+              console.log("toke invalid")
             }
           } catch (error) {
             console.error('Error validating token:', error);

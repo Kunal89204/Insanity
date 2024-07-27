@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useState } from 'react';
-
+import { useToast } from '@chakra-ui/react';
 
 const AddCategory = () => {
   const [name, setName] = useState("");
@@ -10,6 +10,7 @@ const AddCategory = () => {
   const [thumbnailPreview, setThumbnailPreview] = useState(null);
   const [banner, setBanner] = useState(null);
   const [bannerPreview, setBannerPreview] = useState(null);
+  const toast = useToast();
 
   const handleFileChange = (e, setFile, setPreview) => {
     const file = e.target.files[0];
@@ -26,37 +27,41 @@ const AddCategory = () => {
     }
   };
 
-
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
     const subCategoriesArray = subCategories.split(",").map(subCategory => subCategory.trim());
 
     const formData = new FormData();
     formData.append('name', name);
-    formData.append('subCategories', subCategoriesArray); // Append the array directly
+    formData.append('subCategories', JSON.stringify(subCategoriesArray)); // Append the array as a JSON string
     formData.append('description', description);
     formData.append('thumbnail', thumbnail);
     formData.append('banner', banner);
 
-    try {
-     
-      const response = await axios.post('http://localhost:8000/api/v1/addCategory', formData, {
+    // Show a loading toast
+    toast.promise(
+      axios.post('http://localhost:8000/api/v1/addCategory', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
-      });
-      
+      }),
+      {
+        loading: {title:"Creating a new category"},
+        success: {
+          title: "Success",
+          description: "New category has been created",
+        },
+        error: {
+          title: "Error",
+          description: "There was an error adding the new category",
+        }
+      }
+    ).then((response) => {
       console.log('Category added:', response.data);
-const formDataarray = Array.from(formData)
-console.log(formDataarray)
-console.log(subCategoriesArray)
-      
-      // Optionally, you can redirect or handle success state here
-    } catch (error) {
+    }).catch((error) => {
       console.error('Error adding category:', error);
-      // Handle error state here
-    }
-  }
+    });
+  };
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">

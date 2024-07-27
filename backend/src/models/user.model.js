@@ -73,7 +73,7 @@ userSchema.methods.generateAccessToken = function() {
     },
     process.env.JWT_SECRET,
     {
-      expiresIn: '2h', // Access token expires in 2 hours
+      expiresIn: '20h', // Access token expires in 2 hours
     }
   );
 };

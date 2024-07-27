@@ -89,7 +89,7 @@ const AddProducts = () => {
 
   
     if (name !== "" && price !== 0) {
-      setSpinner(true);
+      // setSpinner(true);
     }
   
     const formData = new FormData();
@@ -118,7 +118,7 @@ const AddProducts = () => {
     addProductPromise
       .then(response => {
         console.log('Product added successfully:', response.data);
-        setSpinner(false);
+        // setSpinner(false);
       })
       .catch(error => {
         console.error('Error adding product:', error.response?.data?.message || error.message);

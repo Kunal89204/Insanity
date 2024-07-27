@@ -19,7 +19,7 @@ const Products = () => {
 
       <div className='flex flex-wrap justify-around py-4 '>
       {products && products.map((item, i) => (
-        <Product key={i} imgurl={item.images[0]} name={item.name} discount={item.discountedPrice} price={item.price} />  
+        <Product key={i} imgurl={item.images[0]} name={item.name} discount={item.discountedPrice} price={item.price} id={item._id} />  
       ))}      
       </div>
     </div>

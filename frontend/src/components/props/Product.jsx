@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
+import { Link } from 'react-router-dom'
 
-const Product = ({imgurl, name, discount, price}) => {
+
+const Product = ({imgurl, name, discount, price, id}) => {
 
     const [quantity, setQuantity] = useState(0)
 
@@ -17,7 +19,7 @@ const Product = ({imgurl, name, discount, price}) => {
   return (
     <div className='w-1/4 bg-white p-4 shadow-md rounded-3xl'>
             <p className='italy-font'>Sofa</p>
-            <div><img src={`${imgurl}`} className='rounded-3xl' alt="" /></div>
+            <div><Link to={`/product/${id}`}><img src={`${imgurl}`} className='rounded-3xl' alt="" /></Link></div>
             <div>
                 <strong className='italy-font text-xl'>{name}</strong>
                 <div className='inria-sans-light flex gap-2 py-1 '>

@@ -133,7 +133,6 @@ const deleteCategory = async (req, res) => {
 };
 
 
-
 const eachCategory = async (req, res) => {
     try {
         const name = req.params.name
