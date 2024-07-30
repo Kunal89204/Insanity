@@ -86,6 +86,9 @@ const Navbar = () => {
           <Link to={`/profile/${user.username}`}>
             <MenuItem>Profile</MenuItem>
           </Link>
+          <Link to={`/admin/users`}>
+            <MenuItem>Admin</MenuItem>
+          </Link>
           <MenuItem onClick={logout}>Logout</MenuItem>
         </MenuList>
       </Menu>

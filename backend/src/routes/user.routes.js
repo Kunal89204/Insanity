@@ -8,7 +8,7 @@ const checkAdminRole = require("../middlewares/checkAdminRole");
 
 router.post("/login",  loginUser)
 router.post("/register", registerUser)
-router.get("/getUsers",requireAuth,checkAdminRole,  getUsers)
+router.get("/getUsers",requireAuth,  getUsers)
 router.post("/editProfile/:userId", upload.single("avatar"), editProfile)
 router.get('/validate-token', requireAuth, validate_token)
 
