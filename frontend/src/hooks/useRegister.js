@@ -6,7 +6,7 @@ const useRegister = () => {
     const {login}  = useAuthStore()
 
     const registerHook = (data) => {
-        axios.post('http://localhost:8000/api/v1/register', data)
+        axios.post(`${import.meta.env.VITE_BAKCEND_URI}/register`, data)
         .then((respo) => {
             console.log(respo.data)
             localStorage.setItem('user', JSON.stringify(respo.data))

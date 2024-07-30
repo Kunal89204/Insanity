@@ -8,7 +8,7 @@ const Category = () => {
     const [catInfo, setCatInfo] = useState({})
 
     useEffect(() => {
-      axios.get(`http://localhost:8000/api/v1/eachCategory/${name}`)
+      axios.get(`${import.meta.env.VITE_BAKCEND_URI}/eachCategory/${name}`)
       .then((respo) => {
         setCatInfo(respo.data)
       })

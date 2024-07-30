@@ -40,7 +40,7 @@ const AddCategory = () => {
 
     // Show a loading toast
     toast.promise(
-      axios.post('http://localhost:8000/api/v1/addCategory', formData, {
+      axios.post(`${import.meta.env.VITE_BAKCEND_URI}/addCategory`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }

@@ -6,7 +6,7 @@ const Categories = () => {
   const [categories, setCategories] = useState([])
 
   useEffect(() => {
-    axios.get('http://localhost:8000/api/v1/getCategory')
+    axios.get(`${import.meta.env.VITE_BAKCEND_URI}/getCategory`)
       .then((respo) => {
         setCategories(respo.data)
         console.log(categories)

@@ -8,12 +8,12 @@ const ViewProduct = () => {
     const [loading, setLoading] = useState(true);
     const [mainImage, setMainImage] = useState('');
     const [quantity, setQuantity] = useState(0);
-
+ 
     useEffect(() => {
-        axios.get(`http://localhost:8000/api/v1/getSingleProduct/${productId}`) 
+        axios.get(`${import.meta.env.VITE_BAKCEND_URI}/getSingleProduct/${productId}`) 
             .then((response) => {
                 setProductData(response.data);
-                console.log(response.data)
+                
                 setMainImage(response.data.images[0] || 'fallback-image-url'); // Set initial main image
                 setLoading(false);
             })

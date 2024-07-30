@@ -18,7 +18,7 @@ export const createAuthSlice = (set) => ({
     
         if (user && user.accessToken) {
           try {
-            const response = await axios.get('http://localhost:8000/api/v1/validate-token', {
+            const response = await axios.get(`${import.meta.env.VITE_BAKCEND_URI}/validate-token`, {
               headers: {
                 Authorization: `Bearer ${user.accessToken}`,
               },

@@ -8,7 +8,7 @@ const Products = () => {
     const [products, setProducts] = useState([])
 
     useEffect(() => {
-        axios.get('http://localhost:8000/api/v1/getProduct')
+        axios.get(`${import.meta.env.VITE_BAKCEND_URI}/getProduct`)
         .then((respo) => {
             setProducts(respo.data)
         })

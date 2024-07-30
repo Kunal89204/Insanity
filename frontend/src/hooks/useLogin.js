@@ -7,7 +7,7 @@ const useLogin = () => {
 
     const loginHook = (data, setPopup, setPopupValue) => {
         
-        axios.post('http://localhost:8000/api/v1/login', data)
+        axios.post(`${import.meta.env.VITE_BAKCEND_URI}/login`, data)
         .then((respo) => {
             if (respo.data.accessToken) {
                 console.log(respo.data.accessToken)

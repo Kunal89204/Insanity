@@ -7,7 +7,7 @@ const Products = () => {
   const [products, setProducts] = useState([]);
 
   const fetchProducts = () => {
-    axios.get('http://localhost:8000/api/v1/getProduct')
+    axios.get(`${import.meta.env.VITE_BAKCEND_URI}/getProduct`)
       .then((response) => {
         setProducts(response.data);
       })
@@ -18,7 +18,7 @@ const Products = () => {
 
   const handleDelete = (id, images, video) => {
     
-    axios.delete(`http://localhost:8000/api/v1/deleteProduct/${id}`, {
+    axios.delete(`${import.meta.env.VITE_BAKCEND_URI}/deleteProduct/${id}`, {
       data: {
         images, 
         video
