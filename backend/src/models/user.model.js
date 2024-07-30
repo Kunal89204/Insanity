@@ -71,7 +71,7 @@ userSchema.methods.generateAccessToken = function() {
       _id: this._id,
       username: this.username,
     },
-    process.env.JWT_SECRET,
+    'shhh',
     {
       expiresIn: '20h', // Access token expires in 2 hours
     }
@@ -84,7 +84,7 @@ userSchema.methods.generateRefreshToken = function() {
     {
       _id: this._id,
     },
-    process.env.JWT_SECRET,
+    'shhh',
     {
       expiresIn: '24h', // Refresh token expires in 24 hours
     }
