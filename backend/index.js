@@ -10,11 +10,11 @@ const reviewRoutes = require("./src/routes/review.routes")
 connectDB();
 
 
-app.use("/api/v1", userRoutes)
-app.use("/api/v1", categoryRoutes)
-app.use("/api/v1", productRoutes)
-app.use("/api/v1", cartRoutes)
-app.use("/api/v1", reviewRoutes)
+app.use("/", userRoutes)
+app.use("/", categoryRoutes)
+app.use("/", productRoutes)
+app.use("/", cartRoutes)
+app.use("/", reviewRoutes)
 
 
 
