@@ -1,5 +1,7 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
+
 
 
 const Categories = () => {
@@ -23,7 +25,7 @@ const Categories = () => {
 
       {categories && categories.map((cat) => (
         <div className='w-32' key={cat._id}>
-          <div className=''><img src={`${cat.images.thumbnail}`} alt="" className='rounded-full aspect-square'/></div>
+          <Link to={`/category/${cat?.name}`}><div className=''><img src={`${cat.images.thumbnail}`} alt="" className='rounded-full aspect-square'/></div></Link>
           <p className='text-center'>{cat.name}</p>
         </div>
       ))}

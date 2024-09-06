@@ -136,10 +136,45 @@ const deleteCategory = async (req, res) => {
 const eachCategory = async (req, res) => {
     try {
         const name = req.params.name
-        const data = await Category.findOne({ name })
-        const catId = data._id
-        const Products = await Product.find({ category: catId })
-        res.json({ data, Products })
+        // const data = await Category.findOne({ name })
+        // const catId = data._id
+        // const Products = await Product.find({ category: catId })
+        // res.json({ data, Products })
+
+        const result = await Category.aggregate([
+            {
+                $match:{
+                    name
+                }
+            },
+            {
+                $lookup:{
+                    from: 'products',
+                    localField:'_id',
+                    foreignField:'category',
+                    as:'Products'
+                }
+            }, 
+            {
+                $project: {
+                    name: 1,
+                    description: 1,
+                    images: 1,
+                    // subCategories: 1,
+                    Products: {
+                        _id: 1,
+                        name: 1,
+                        price: 1,
+                        discountedPrice: 1,
+                        images: 1,
+                        description: 1,
+                       
+                    }
+                }
+            }
+        ])
+
+        res.json(result[0])
     } catch (error) {
         console.log(error)
     }

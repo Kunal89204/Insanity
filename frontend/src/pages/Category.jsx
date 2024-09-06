@@ -1,21 +1,35 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
+import { fetchData } from '../hooks/fetchData'
+import { useAuthStore } from '../context/store'
+
+
 
 
 const Category = () => {
     const {name} = useParams()
+    const {user} = useAuthStore()
+ 
     const [catInfo, setCatInfo] = useState({})
 
+    const fetchCategoryInfo = async () => {
+      try {
+        const response = await fetchData.getCategoryInfo(user?.accessToken, name)
+     setCatInfo(response)
+      } catch (error) {
+        consoel.log(error)
+      }
+    }
+
     useEffect(() => {
-      axios.get(`${import.meta.env.VITE_BAKCEND_URI}/eachCategory/${name}`)
-      .then((respo) => {
-        setCatInfo(respo.data)
-      })
-    })
+      fetchCategoryInfo()
+    }, [name])
   return (
     <div>
-      <div ><img className='h-60 w-full m-auto' src="https://www.shutterstock.com/image-illustration/interior-design-concept-sale-home-260nw-2176522145.jpg" alt="" /></div>
+      <div className='relative'><img className='h-[60vh] w-full m-auto' src={catInfo?.images?.thumbnail} alt="" />
+      <p className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white text-5xl'>{catInfo?.name}</p>
+      </div>
     </div>
   )
 }
